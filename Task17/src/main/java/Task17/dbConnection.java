@@ -1,33 +1,44 @@
 package Task17;
 
-import org.postgresql.Driver;
-
 import java.sql.*;
 
 
-public class ConnectionDB {
+public class dbConnection {
 
     static Connection connection;
+    static PreparedStatement pstatement;
+    static dbConnection object;
+    static Statement statement;
 
-    private ConnectionDB() throws SQLException {
-        getConnectionDB();
+    private dbConnection() throws SQLException {
+        if(connection==null){
+            String url = "jdbc:postgresql://" + dbConfig.SERVER_IP + "/" + dbConfig.DATABASENAME;
+            connection = DriverManager.getConnection(url, dbConfig.USERNAME, dbConfig.PASSWORD);
+            statement = connection.createStatement();
+        }
     }
 
-    static Connection getConnectionDB() throws SQLException {
-        if(connection==null){
-            String url = "jdbc:postgresql://" + ConfigDB.SERVER_IP + "/" + ConfigDB.DATABASENAME;
-            connection = DriverManager.getConnection(url, ConfigDB.USERNAME, ConfigDB.PASSWORD);
+    //getConnectionDB() - singleton implementation
+    static dbConnection getConnectionDB() throws SQLException {
+        if(object==null){
+            object = new dbConnection();
         }
-        return connection;
+        return object;
     }
 
     public static ResultSet select(String sql) throws SQLException {
-        PreparedStatement pstatement = getConnectionDB().prepareStatement(sql);
+        PreparedStatement pstatement = connection.prepareStatement(sql);
         return pstatement.executeQuery();
     }
 
+    /**
+     * execute() - метод для INSERT,UPDATE,DELETE операций с БД
+     * @param sql - полностью сгенерированный SQL-запрос
+     * @return
+     * @throws SQLException
+     */
     public static int execute(String sql) throws SQLException {
-        PreparedStatement pstatement = getConnectionDB().prepareStatement(sql);
+        PreparedStatement pstatement = connection.prepareStatement(sql);
         return pstatement.executeUpdate();
     }
 }

@@ -3,17 +3,30 @@ package Task17;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Market {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static Map<Integer, Integer> idCount = new HashMap<>();
+    static Map<Integer, Integer> idAmount = new HashMap<>();
 
+    /**
+     * showGoods - метод отображения всех товаров в магазине
+     * @throws SQLException
+     */
+    static void showGoods() throws SQLException {
+        dbConnection.getConnectionDB();
+        ResultSet rs = dbConnection.select("SELECT * FROM goods");
+        while(rs.next()){
+            System.out.println("id Товара: " + rs.getInt("good_id") +
+                    " Название товара: " + rs.getString("title") +
+                    " Количество: " + rs.getInt("amount"));
+        }
+    }
 
     /**
      * buy() - Метод, в котором пользователя формирует корзину покупок
@@ -21,7 +34,7 @@ public class Market {
      */
     static void buy() throws IOException {
         //rp - строка, в которую записывается ответ пользователя
-        String rp = "";
+        String rp;
         //response - обработанный ответ
         String[] response;
         while(true){
@@ -35,7 +48,7 @@ public class Market {
                 response = rp.split(":");
                 //преобразуем массив строк в целочисленный массив и кладём
                 // в коллекцию HashMap: idCount <K,V> в соответствии с индексами
-                idCount.put(Integer.parseInt(response[0]),Integer.parseInt(response[1]));
+                idAmount.put(Integer.parseInt(response[0]),Integer.parseInt(response[1]));
                 //если ввели "exit" - покупка завершена
             }else if(rp.equalsIgnoreCase("exit")){
                 System.out.println("Формирование корзины завершено");

@@ -9,18 +9,14 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, IOException {
-        ConnectionDB.getConnectionDB();
-        ResultSet rs = ConnectionDB.select("SELECT * FROM goods");
-        while(rs.next()){
-            System.out.println("id Товара: " + rs.getInt("good_id") +
-                   " Название товара: " + rs.getString("title") +
-                   " Количество: " + rs.getInt("amount"));
-        }
 
-
-        StringBuilder sql = new StringBuilder();//Запрос к бд
+        Market.showGoods();
         Market.buy();
-        for (var s : Market.idCount.entrySet()) {
+
+        //проверка состава коллекции HashMap idCount,
+        // также нужен метод проверки соттветствия введённого id и amount
+        //и наличия этих id и amount в БД
+        for (var s : Market.idAmount.entrySet()) {
             System.out.println(s.getKey() + " : " + s.getValue());
         }
     }
