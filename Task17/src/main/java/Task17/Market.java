@@ -13,14 +13,28 @@ import java.util.regex.Pattern;
 public class Market {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static Map<Integer, Integer> idAmount = new HashMap<>();
-
+    //static Map<Integer, Integer> availibility = new HashMap<>();
     /**
-     * showGoods - метод отображения всех товаров в магазине
+     * showGoods() - метод отображения всех товаров в магазине
      * @throws SQLException
      */
     static void showGoods() throws SQLException {
         dbConnection.getConnectionDB();
-        ResultSet rs = dbConnection.select("SELECT * FROM goods");
+        ResultSet rs = dbCommands.select("SELECT * FROM goods");
+        while(rs.next()){
+            System.out.println("id Товара: " + rs.getInt("good_id") +
+                    " Название товара: " + rs.getString("title") +
+                    " Количество: " + rs.getInt("amount"));
+        }
+    }
+
+    /**
+     * showBasketShop() - метод отображения всех товаров в корзине покупок
+     * @throws SQLException
+     */
+    static void showBasketShop() throws SQLException {
+        dbConnection.getConnectionDB();
+        ResultSet rs = dbCommands.select("SELECT * FROM basketShop");
         while(rs.next()){
             System.out.println("id Товара: " + rs.getInt("good_id") +
                     " Название товара: " + rs.getString("title") +
@@ -71,5 +85,11 @@ public class Market {
         Matcher mt = pt.matcher(string);
         return mt.matches();
     }
+
+    /*static boolean isCheckAvailibilityOfGood(HashMap<Integer,Integer> idAmount){
+        for (var item : idAmount.entrySet()) {
+            if(item.getKey()))
+        }
+    }*/
 }
 
